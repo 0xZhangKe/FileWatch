@@ -11,29 +11,36 @@ object FileRecordRepo {
 
     fun findByPath(path: String): Single<FileRecord> {
         return FileRecordDatabases.instance
-            .dao()
-            .findByPath(path)
-            .ioSubscribeUiObserve()
+                .dao()
+                .findByPath(path)
+                .ioSubscribeUiObserve()
     }
 
     fun findByParent(parentPath: String): Single<List<FileRecord>> {
         return FileRecordDatabases.instance
-            .dao()
-            .findByParent(parentPath)
-            .ioSubscribeUiObserve()
+                .dao()
+                .findByParent(parentPath)
+                .ioSubscribeUiObserve()
     }
 
     fun insert(record: FileRecord): Completable {
         return FileRecordDatabases.instance
-            .dao()
-            .insert(record)
-            .ioSubscribeUiObserve()
+                .dao()
+                .insert(record)
+                .ioSubscribeUiObserve()
+    }
+
+    fun insert(record: List<FileRecord>): Completable {
+        return FileRecordDatabases.instance
+                .dao()
+                .insert(record)
+                .ioSubscribeUiObserve()
     }
 
     fun deleteByPath(path: String): Completable {
         return FileRecordDatabases.instance
-            .dao()
-            .deleteByPath(path)
-            .ioSubscribeUiObserve()
+                .dao()
+                .deleteByPath(path)
+                .ioSubscribeUiObserve()
     }
 }
