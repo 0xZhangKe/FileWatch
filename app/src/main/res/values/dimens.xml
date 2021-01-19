@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="toolbar_height">48dp</dimen>
+
+    <dimen name="page_padding_start">12dp</dimen>
+    <dimen name="page_padding_end">10dp</dimen>
+
+    <dimen name="config_title_size">12sp</dimen>
+    <dimen name="line_title">16sp</dimen>
+</resources>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vm"
+            type="com.zhangke.filewatch.vm.FileListVm" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar"
+            app:vm="@{vm.toolbarVm}" />
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:contentId="@{@id/data_content}"
+            app:emptyId="@{@id/include_empty}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:loadingId="@{@id/include_loading}"
+            app:loadingStatus="@{vm.loadingStatus}">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/data_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:modularizedItems="@{vm.items}"
+                tools:listitem="@layout/item_file" />
+
+            <include
+                android:id="@+id/include_loading"
+                layout="@layout/include_loading" />
+
+            <include
+                android:id="@+id/include_empty"
+                layout="@layout/include_empty"
+                app:vm="@{vm.emptyVm}" />
+        </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

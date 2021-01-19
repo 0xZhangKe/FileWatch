@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.text.TextUtils" />
+
+        <variable
+            name="vm"
+            type="com.zhangke.filewatch.vm.ToolbarVM" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/toolbar_height"
+            android:paddingStart="@dimen/page_padding_start"
+            android:paddingEnd="0dp"
+            app:contentInsetEnd="0dp"
+            app:contentInsetStart="0dp"
+            app:menuItems="@{vm.menuItems}">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/blind_back"
+                android:gravity="center"
+                android:onClick="@{vm.onBackClick}"
+                app:srcCompat="@drawable/ic_arrow_back_24"
+                app:tint="@{vm.iconColor}"
+                app:visible="@{vm.backMenuVisible}" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="6dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{vm.title}"
+                android:textColor="@{vm.titleColor}"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:visible="@{!TextUtils.isEmpty(vm.title)}"
+                tools:text="Title" />
+        </androidx.appcompat.widget.Toolbar>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_gravity="bottom"
+            android:background="#cccccc"
+            app:visible="@{vm.lineVisible}" />
+    </LinearLayout>
+</layout>

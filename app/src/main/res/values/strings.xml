@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">FileWatch</string>
+
+    <string name="blind_back">返回</string>
+    <string name="refresh">刷新</string>
+
+    <string name="loading_failed">加载失败</string>
+    <string name="content_empty">啥也没有</string>
+    <string name="retry_tip">点击重试</string>
+
+    <string name="file_list_page">文件列表</string>
+    <string name="file_list_page_no_arg">文件不存在</string>
+</resources>
