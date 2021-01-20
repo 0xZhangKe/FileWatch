@@ -3,6 +3,8 @@ package com.zhangke.filewatch.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
@@ -10,6 +12,8 @@ import com.zhangke.filewatch.R
 import com.zhangke.filewatch.common.MenuItemFactory
 import com.zhangke.filewatch.common.toastText
 import com.zhangke.filewatch.databinding.ActivityFileListBinding
+import com.zhangke.filewatch.utils.FileHelper
+import com.zhangke.filewatch.utils.neverDispose
 import com.zhangke.filewatch.vm.FileListVm
 import java.io.File
 
@@ -45,15 +49,33 @@ class FileListActivity : AppCompatActivity() {
     private fun initVm() {
         vm.toolbarVm.title.value = getString(R.string.file_list_page)
         val refreshMenu = MenuItemFactory.newImageItem(
-            this,
-            getString(R.string.refresh),
-            R.drawable.ic_baseline_refresh_24
+                this,
+                getString(R.string.refresh),
+                R.drawable.ic_baseline_refresh_24
         ) { forceRefreshFileRecord() }
         vm.toolbarVm.menuItems.value = listOf(refreshMenu)
     }
 
     private fun forceRefreshFileRecord() {
-
+        val dialog = AlertDialog.Builder(this)
+                .setTitle("计算中...")
+                .setNegativeButton("取消") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .setCancelable(false)
+                .setMessage("...")
+                .create()
+        dialog.show()
+        val helper = FileHelper(File(filePath!!)) {
+            dialog.setMessage(it.absolutePath)
+        }
+        helper.refresh()
+                .subscribe({
+                    dialog.cancel()
+                    Toast.makeText(this, "完成", Toast.LENGTH_SHORT).show()
+                }, {
+                    it.printStackTrace()
+                }).neverDispose()
     }
 
     companion object {
