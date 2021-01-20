@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
             1234
         )
 
-        input.text = "/sdcard/Android/data/com.tencent.mm/MicroMsg".toEditable()
+        input.text = "/sdcard/Android/data/com.tencent.mm/MicroMsg/".toEditable()
 
         btn.setOnClickListener {
             FileListActivity.open(this, input.text.toString())

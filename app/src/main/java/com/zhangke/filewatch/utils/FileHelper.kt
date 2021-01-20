@@ -1,29 +1,33 @@
 package com.zhangke.filewatch.utils
 
+import android.util.Log
 import com.zhangke.filewatch.db.FileRecord
 import com.zhangke.filewatch.db.FileRecordRepo
 import io.reactivex.Completable
-import io.reactivex.Single
 import java.io.File
 
 /**
  * Created by ZhangKe on 2021/1/19.
  */
-class FileHelper(val file: File,
-                 private val onDirChanged: (File) -> Unit) {
+class FileHelper(
+    private val file: File,
+    private val onDirChanged: (File) -> Unit
+) {
 
     private val oneMB = 1024 * 1024
-    private val countThreshold = 100
-    private val sizeThreshold = 50 * oneMB
+    private val countThreshold = 300
+    private val sizeThreshold = 200 * oneMB
+
+    private val recordList = ArrayList<FileRecord>(1000)
 
     fun refresh(): Completable {
-        return Single.create<List<FileRecord>> {
-            val list = ArrayList<FileRecord>(1000)
-            val (count, size) = getChildCountAndSize(file, null, list)
-            list += FileRecord.from(null, file, count, size)
-        }
-                .flatMapCompletable { FileRecordRepo.insert(it) }
-                .ioSubscribeUiObserve()
+        return Completable.create {
+            val (count, size) = getChildCountAndSize(file, null, recordList)
+            recordList += FileRecord.from(null, file, count, size)
+            Log.d("ZK_TEST", "All file completed :$file, count:$count, size:$size")
+            it.onComplete()
+        }.doFinally { saveToLocation(recordList) }
+            .ioSubscribeUiObserve()
     }
 
     private fun getChildCountAndSize(file: File, parentFile: File?, list: ArrayList<FileRecord>): Pair<Int, Long> {
@@ -40,7 +44,19 @@ class FileHelper(val file: File,
         if (fileCount > countThreshold || size > sizeThreshold) {
             list += FileRecord.from(parentFile, file, fileCount, size)
             onDirChanged(file)
+            Log.d("ZK_TEST", "on dir record:$file, count:$fileCount, size:$size")
         }
+        Log.d("ZK_TEST", "completed :$file, count:$fileCount, size:$size")
         return fileCount to size
+    }
+
+    private fun saveToLocation(list: ArrayList<FileRecord>) {
+        FileRecordRepo.insert(list)
+            .subscribe({
+                toastText("保存成功")
+            }, {
+                toastText("保存失败：${it.message}")
+                it.printStackTrace()
+            }).neverDispose()
     }
 }

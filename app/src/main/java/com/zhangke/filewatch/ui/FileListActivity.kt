@@ -3,6 +3,8 @@ package com.zhangke.filewatch.ui
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +32,10 @@ class FileListActivity : AppCompatActivity() {
 
     private var filePath: String? = null
 
+    override fun onBackPressed() {
+        onBackEvent()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initVm()
@@ -43,39 +49,51 @@ class FileListActivity : AppCompatActivity() {
             return
         }
         this.filePath = filePath
-        vm.init(filePath)
+        vm.initCurrentPath(filePath)
     }
 
     private fun initVm() {
         vm.toolbarVm.title.value = getString(R.string.file_list_page)
+        vm.toolbarVm.onBackClick.value = View.OnClickListener {
+            onBackEvent()
+        }
         val refreshMenu = MenuItemFactory.newImageItem(
-                this,
-                getString(R.string.refresh),
-                R.drawable.ic_baseline_refresh_24
+            this,
+            getString(R.string.refresh),
+            R.drawable.ic_baseline_refresh_24
         ) { forceRefreshFileRecord() }
         vm.toolbarVm.menuItems.value = listOf(refreshMenu)
     }
 
+    private fun onBackEvent() {
+        if (vm.onBackPressed()) {
+            finish()
+        }
+    }
+
     private fun forceRefreshFileRecord() {
         val dialog = AlertDialog.Builder(this)
-                .setTitle("计算中...")
-                .setNegativeButton("取消") { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .setCancelable(false)
-                .setMessage("...")
-                .create()
+            .setTitle("计算中...")
+            .setNegativeButton("取消") { dialog, _ ->
+                dialog.dismiss()
+            }
+            .setCancelable(false)
+            .setMessage("...")
+            .create()
         dialog.show()
         val helper = FileHelper(File(filePath!!)) {
-            dialog.setMessage(it.absolutePath)
+            runOnUiThread { dialog.setMessage(it.absolutePath) }
         }
         helper.refresh()
-                .subscribe({
-                    dialog.cancel()
-                    Toast.makeText(this, "完成", Toast.LENGTH_SHORT).show()
-                }, {
-                    it.printStackTrace()
-                }).neverDispose()
+            .subscribe({
+                dialog.cancel()
+                Log.d("ZK_TEST", "refresh completed")
+                Toast.makeText(this, "完成", Toast.LENGTH_SHORT).show()
+            }, {
+                it.printStackTrace()
+                dialog.cancel()
+                Log.d("ZK_TEST", "refresh error:${it.message}")
+            }).neverDispose()
     }
 
     companion object {

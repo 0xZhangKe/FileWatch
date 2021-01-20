@@ -12,18 +12,27 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
+        android:onClick="@{vm.onClick}"
         android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:src="@{vm.isFolders? @drawable/ic_folders : @drawable/ic_file_24}"
+            tools:src="@drawable/ic_folders" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="5dp"
             android:layout_marginEnd="10dp"
             android:layout_weight="1"
-            android:ellipsize="end"
-            android:lines="1"
-            android:text="@{vm.path}"
+            android:ellipsize="start"
+            android:singleLine="true"
+            android:text="@{vm.name}"
             android:textColor="#222222"
             tools:text="sdjkfhskdfskfjskdfjsfjsldfjsldfjsldfsdfsdfkjsjkfskdfhskfsdf" />
 

@@ -43,14 +43,15 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="6dp"
-                android:ellipsize="end"
-                android:maxLines="1"
+                android:layout_marginEnd="10dp"
+                android:ellipsize="middle"
+                android:singleLine="true"
                 android:text="@{vm.title}"
                 android:textColor="@{vm.titleColor}"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:visible="@{!TextUtils.isEmpty(vm.title)}"
-                tools:text="Title" />
+                tools:text="TitleTitlTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitleTitlee" />
         </androidx.appcompat.widget.Toolbar>
 
         <View

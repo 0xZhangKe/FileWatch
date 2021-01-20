@@ -1,7 +1,15 @@
 package com.zhangke.filewatch.db
 
 import android.content.Context
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Database
+import androidx.room.Entity
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.PrimaryKey
+import androidx.room.Query
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.zhangke.filewatch.utils.appContext
 import io.reactivex.Completable
 import io.reactivex.Single
@@ -26,30 +34,33 @@ abstract class FileRecordDatabases : RoomDatabase() {
 
         private fun createInstance(context: Context): FileRecordDatabases {
             return Room.databaseBuilder(context, FileRecordDatabases::class.java, DB_NAME)
-                    .allowMainThreadQueries()
-                    .build()
+                .allowMainThreadQueries()
+                .build()
         }
     }
 }
 
 @Entity(tableName = TABLE_NAME)
 data class FileRecord(
-        @PrimaryKey val path: String,
-        val parent: String?,
-        val name: String,
-        val childCount: Int,
-        val totalSize: Int // 单位 KB
+    @PrimaryKey val path: String,
+    val parent: String?,
+    val name: String,
+    val isFolders: Boolean,
+    val childCount: Int,
+    val totalSize: Int // 单位 KB
 ) {
 
     companion object {
 
         fun from(parent: File?, file: File, count: Int, size: Long): FileRecord {
             return FileRecord(
-                    path = file.absolutePath,
-                    parent = parent?.absolutePath,
-                    name = file.name,
-                    childCount = count,
-                    totalSize = (size / 1024).toInt())
+                path = file.absolutePath,
+                parent = parent?.absolutePath,
+                name = file.name,
+                isFolders = file.isDirectory,
+                childCount = count,
+                totalSize = (size / 1024).toInt()
+            )
         }
     }
 }

@@ -39,6 +39,20 @@ object FileUtil {
         }
         return builder.toString()
     }
+
+    fun getChildCountAndSize(file: File): Pair<Int, Long> {
+        if (file.isFile) {
+            return 1 to file.length()
+        }
+        var fileCount = 0
+        var size = 0L
+        file.listFiles()?.forEach {
+            val result = getChildCountAndSize(it)
+            fileCount += result.first
+            size += result.second
+        }
+        return fileCount to size
+    }
 }
 
 fun File.printTree() {
